@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 
 const MenuItem = ({item}) => {
   const {name , image, price, recipe} = item;
