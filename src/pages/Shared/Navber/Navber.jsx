@@ -1,26 +1,52 @@
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../../../providers/AuthProvider";
-
+import {FaShoppingCart} from 'react-icons/fa';
 const Navber = () => {
-  const {user,logOut } = useContext(AuthContext)
+  const { user, logOut } = useContext(AuthContext);
 
   const handleLogout = () => {
     logOut()
-    .then(() =>{} )
-    .catch((error) => console.log(error))
-  }
+      .then(() => {})
+      .catch((error) => console.log(error));
+  };
 
-    const navOptions = <>
-        <li><NavLink to={'/'}>Home</NavLink></li>
-        <li><NavLink to='/menu'>Our Menu</NavLink></li>
-        <li><NavLink to={'/order/salad'}>Order Food</NavLink></li>
-        <li><NavLink to={'/secret'}>Secret</NavLink></li>
-        
-        {
-            user ? <><button onClick={handleLogout} className="btn btn-ghost">Logout</button></> : <li><NavLink to={'/login'}>Login</NavLink></li>
-        }
+  const navOptions = (
+    <>
+      <li>
+        <NavLink to={"/"}>Home</NavLink>
+      </li>
+      <li>
+        <NavLink to="/menu">Our Menu</NavLink>
+      </li>
+      <li>
+        <NavLink to={"/order/salad"}>Order Food</NavLink>
+      </li>
+      <li>
+        <NavLink to={"/secret"}>Secret</NavLink>
+      </li>
+      <li>
+        <NavLink to={"#"}>
+          <button className="btn">
+            <FaShoppingCart className="mr-2"/>
+            <div className="badge badge-secondary">+0</div>
+          </button>
+        </NavLink>
+      </li>
+
+      {user ? (
+        <>
+          <button onClick={handleLogout} className="btn btn-ghost">
+            Logout
+          </button>
+        </>
+      ) : (
+        <li>
+          <NavLink to={"/login"}>Login</NavLink>
+        </li>
+      )}
     </>
+  );
   return (
     <div>
       <div className="navbar fixed z-10 bg-opacity-30 bg-black w-11/12">
@@ -46,15 +72,14 @@ const Navber = () => {
               tabIndex={0}
               className="menu text-white  menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
             >
-             {navOptions}
+              {navOptions}
             </ul>
           </div>
           <a className="btn btn-ghost text-xl text-white ">Bistro Boss</a>
         </div>
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1 gap-3 text-white ">
-           {navOptions}
-            
+            {navOptions}
           </ul>
         </div>
         <div className="navbar-end">
