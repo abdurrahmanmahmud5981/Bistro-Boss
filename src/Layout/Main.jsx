@@ -4,7 +4,7 @@ import Navber from "../pages/Shared/Navber/Navber";
 
 const Main = () => {
   const location = useLocation();
-  const noHeaderFooter = location.pathname.includes("login");
+  const noHeaderFooter = location.pathname.includes("login") || location.pathname.includes("signup");
   return (
     <div className="w-11/12 mx-auto">
       {noHeaderFooter || (
