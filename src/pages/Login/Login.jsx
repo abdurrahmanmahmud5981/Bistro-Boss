@@ -19,6 +19,7 @@ const Login = () => {
     const navigate  = useNavigate();
     const location  = useLocation();
     const from = location.state?.from.pathname || "/";
+    console.log('navigate', location.state);
 
     useEffect(() => {
         loadCaptchaEnginge(3);
