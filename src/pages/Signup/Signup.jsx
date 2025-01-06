@@ -18,13 +18,16 @@ const Signup = () => {
  const navigate = useNavigate();
   const onSubmit = (data) =>{
     
-    console.log(data)
+
     createUser(data.email, data.password)
         .then((result) => {
             const user = result.user;
             console.log('signin ----',user);
             updateUserProfile(data.photoURL,data.name)
             .then(() => {
+              // create user entry in database
+              
+
               Swal.fire({
                 title: 'User registered successfully',
                 icon:'success',
