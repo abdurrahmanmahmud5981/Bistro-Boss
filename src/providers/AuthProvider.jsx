@@ -10,6 +10,7 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
+import useAxiosPublic from "../hooks/useAxiosPublic";
 
 export const AuthContext = createContext(null);
 
@@ -18,7 +19,8 @@ const auth = getAuth(app);
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const googleProvider = new GoogleAuthProvider()
+  const axiosPublic = useAxiosPublic();
+  const googleProvider = new GoogleAuthProvider();
   // create a new user with email and password
   const createUser = (email, password) => {
     setLoading(true);
@@ -34,7 +36,7 @@ const AuthProvider = ({ children }) => {
   // sign in user with google
   const googleSignin = () => {
     setLoading(true);
-    return signInWithPopup(auth,googleProvider);
+    return signInWithPopup(auth, googleProvider);
   };
 
   // sign out user
@@ -43,26 +45,37 @@ const AuthProvider = ({ children }) => {
     return signOut(auth);
   };
 
-  // update userProfile 
+  // update userProfile
   const updateUserProfile = (photoURL, displayName) => {
     setLoading(true);
-    return updateProfile( auth.currentUser,{
+    return updateProfile(auth.currentUser, {
       photoURL,
       displayName,
     });
   };
 
-  
-
-  
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth,  (currentUser) => {
       setUser(currentUser);
-      console.log("-------" + currentUser);
+      // console.log("-------" + currentUser);
+      if (currentUser) {
+        // get token and store it in the client
+        const userInfo = { email: currentUser.email}
+        axiosPublic.post("/jwt", userInfo).then((res) => {
+          console.log(res);
+          if (res.data.token) {
+            localStorage.setItem("token", res.data.token);
+          }
+          // TODO: store token in client for future use
+        });
+      } else {
+        // TODO: remove token
+        localStorage.removeItem("token");
+      }
       setLoading(false);
     });
     return unsubscribe;
-  }, []);
+  }, [axiosPublic]);
   const authInfo = {
     user,
     loading,
@@ -70,7 +83,7 @@ const AuthProvider = ({ children }) => {
     signIn,
     logOut,
     updateUserProfile,
-    googleSignin
+    googleSignin,
   };
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>

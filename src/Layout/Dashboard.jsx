@@ -12,11 +12,12 @@ import {
 } from "react-icons/fa";
 import { NavLink, Outlet } from "react-router-dom";
 import useCart from "../hooks/useCart";
+import useAdmin from "../hooks/useAdmin";
 
 const Dashboard = () => {
   const [cart] = useCart();
   // TODO
-  const isAdmin = true;
+  const [isAdmin] = useAdmin();
   return (
     <div className="flex">
       {/* sidebar */}
@@ -114,7 +115,7 @@ const Dashboard = () => {
         </ul>
       </div>
       {/* main content */}
-      <div className="flex-1">
+      <div className="flex-1 p-10">
         <Outlet />
       </div>
     </div>

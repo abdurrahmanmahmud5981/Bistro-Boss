@@ -9,7 +9,7 @@ const AllUsers = () => {
   const { data: users = [], refetch } = useQuery({
     queryKey: ["allUsers"],
     queryFn: async () => {
-      const response = await axiosSecure("/users");
+      const response = await axiosSecure("/users",);
       return response.data;
     },
   });
@@ -39,17 +39,19 @@ const AllUsers = () => {
     });
   };
   const handleMakeAdmin = async (user) => {
-    axiosSecure.patch(`/users/admin/${user._id}`, { role: "admin" }).then((res) => {
-      console.log(res.data);
-      if (res.data.modifiedCount === 1) {
-        refetch();
-        Swal.fire({
-          title: "Updated!",
-          text: "User has been made admin.",
-          icon: "success",
-        });
-      }
-    });
+    axiosSecure
+      .patch(`/users/admin/${user._id}`, { role: "admin" })
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.modifiedCount === 1) {
+          refetch();
+          Swal.fire({
+            title: "Updated!",
+            text: "User has been made admin.",
+            icon: "success",
+          });
+        }
+      });
   };
   return (
     <div>
@@ -75,13 +77,16 @@ const AllUsers = () => {
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>
-                {user.role === "admin" ? "Admin" :
-                  <button
-                    onClick={() => handleMakeAdmin(user)}
-                    className="btn bg-orange-600 text-white text-2xl"
-                  >
-                     <FaUsers />
-                  </button>}
+                  {user.role === "admin" ? (
+                    "Admin"
+                  ) : (
+                    <button
+                      onClick={() => handleMakeAdmin(user)}
+                      className="btn bg-orange-600 text-white text-2xl"
+                    >
+                      <FaUsers />
+                    </button>
+                  )}
                 </td>
                 <td>
                   <button
