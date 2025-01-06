@@ -70,6 +70,8 @@ export const router = createBrowserRouter([
             <UpdateItem />
           </AdminRoute>
         ),
+        loader: ({ params }) =>
+          fetch(`http://localhost:5000/menu/${params.id}`),
       },
       {
         path: "allUsers",
