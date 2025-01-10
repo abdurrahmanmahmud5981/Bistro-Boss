@@ -37,7 +37,7 @@ const useAxiosSecure = () => {
         await logOut();
         navigate("/login", { replace: true });
       }
-      console.error("Error in axiosSecure", error);
+      // console.error("Error in axiosSecure", error);
       return Promise.reject(error);
     }
   );
