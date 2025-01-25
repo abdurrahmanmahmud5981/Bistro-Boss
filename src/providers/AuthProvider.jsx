@@ -55,24 +55,26 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth,  (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       // console.log("-------" + currentUser);
       if (currentUser) {
         // get token and store it in the client
-        const userInfo = { email: currentUser.email}
+        const userInfo = { email: currentUser.email };
         axiosPublic.post("/jwt", userInfo).then((res) => {
           console.log(res);
           if (res.data.token) {
             localStorage.setItem("token", res.data.token);
           }
+          setLoading(false);
+
           // TODO: store token in client for future use
         });
       } else {
         // TODO: remove token
         localStorage.removeItem("token");
+        setLoading(false);
       }
-      setLoading(false);
     });
     return unsubscribe;
   }, [axiosPublic]);

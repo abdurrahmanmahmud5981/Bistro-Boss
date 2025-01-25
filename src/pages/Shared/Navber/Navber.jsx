@@ -1,10 +1,12 @@
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../../../providers/AuthProvider";
-import {FaShoppingCart} from 'react-icons/fa';
-import useCart from '../../../hooks/useCart.jsx';
+import { FaShoppingCart } from "react-icons/fa";
+import useCart from "../../../hooks/useCart.jsx";
+import useAdmin from "../../../hooks/useAdmin.jsx";
 const Navber = () => {
   const { user, logOut } = useContext(AuthContext);
+  const [isAdmin] = useAdmin();
   const [cart] = useCart();
   console.log(cart);
   const handleLogout = () => {
@@ -24,13 +26,20 @@ const Navber = () => {
       <li>
         <NavLink to={"/order/salad"}>Order Food</NavLink>
       </li>
-      <li>
-        <NavLink to={"/secret"}>Secret</NavLink>
-      </li>
+      {user && isAdmin && (
+        <li>
+          <NavLink to={"/dashboard/adminHome"}>Dashboard</NavLink>
+        </li>
+      )}
+       {user && !isAdmin && (
+        <li>
+          <NavLink to={"/dashboard/userHome"}>Dashboard</NavLink>
+        </li>
+      )}
       <li>
         <NavLink to={"/dashboard/cart"}>
           <button className="btn">
-            <FaShoppingCart className="mr-2"/>
+            <FaShoppingCart className="mr-2" />
             <div className="badge badge-secondary">+{cart?.length}</div>
           </button>
         </NavLink>
