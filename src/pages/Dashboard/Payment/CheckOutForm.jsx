@@ -117,14 +117,17 @@ const CheckOutForm = () => {
     const paymentInfo = {
       email: user.email,
       price: totalPrice,
-      transectionId: transectionId,
+      transectionId: '',
       date: new Date(),
       cartIds: cart.map((item) => item._id),
       menuItemIds: cart.map((item) => item.menuId),
       status: "pending",
     }
     const res = await axiosSecure.post("/sslcommerz", paymentInfo);
-    console.log(res);
+    if(res.data?.gatewayUrl){
+      window.location.href = res.data.gatewayUrl;
+    }
+    console.log(res.data);
   }
 
   return (
