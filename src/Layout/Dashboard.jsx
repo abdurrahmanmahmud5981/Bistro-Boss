@@ -79,6 +79,12 @@ const Dashboard = () => {
               </NavLink>
             </li>
             <li>
+              <NavLink to={"/dashboard/ssl"}>
+                {" "}
+                <FaShoppingCart />  Sslcommerz ({cart.length})
+              </NavLink>
+            </li>
+            <li>
               <NavLink to={"/dashboard/review"}>
                 {" "}
                 <FaAd /> Add a Review

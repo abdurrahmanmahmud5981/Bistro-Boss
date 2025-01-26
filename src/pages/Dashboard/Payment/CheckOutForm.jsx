@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
 const CheckOutForm = () => {
+  const [paymentMethod, setPaymentMethod] = useState("stripe");
   const [error, setError] = useState("");
   const [clientSecret, setClientSecret] = useState("");
   const [transectionId, setTransectionId] = useState("");
@@ -16,6 +17,8 @@ const CheckOutForm = () => {
   const axiosSecure = useAxiosSecure();
   const [cart, refetch] = useCart();
   const navigate = useNavigate();
+
+
   const totalPrice = cart.reduce((prev, current) => {
     return prev + current.price;
   }, 0);
@@ -88,7 +91,7 @@ const CheckOutForm = () => {
         const paymetn = {
           email: user.email,
           price: totalPrice,
-          transectionId:paymentIntent.id,
+          transectionId: paymentIntent.id,
           date: new Date(),
           cartIds: cart.map((item) => item._id),
           menuItemIds: cart.map((item) => item.menuId),
@@ -103,54 +106,89 @@ const CheckOutForm = () => {
             icon: "success",
             confirmButtonText: "Continue Shopping",
           });
-          navigate('/dashboard/paymentHistory');
+          navigate("/dashboard/paymentHistory");
         }
         console.log(res.data);
-        
       }
     }
   };
 
+  const handlePayment = async()=>{
+    const paymentInfo = {
+      email: user.email,
+      price: totalPrice,
+      transectionId: transectionId,
+      date: new Date(),
+      cartIds: cart.map((item) => item._id),
+      menuItemIds: cart.map((item) => item.menuId),
+      status: "pending",
+    }
+    const res = await axiosSecure.post("/sslcommerz", paymentInfo);
+    console.log(res);
+  }
+
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <CardElement
-          options={{
-            style: {
-              base: {
-                fontSize: "16px",
-                color: "#424770",
-                "::placeholder": {
-                  color: "#aab7c4",
+      <select
+        value={paymentMethod}
+        onChange={(e) => setPaymentMethod(e.target.value)}
+        className="select select-bordered w-full max-w-xs"
+      >
+        <option disabled selected>
+          Choose a Payment Method
+        </option>
+        <option value={"sslcommerz"}>Sslcommerz</option>
+        <option value={"stripe"}>Stripe</option>
+      </select>
+      {paymentMethod === "stripe" && (
+        <form onSubmit={handleSubmit}>
+          <CardElement
+            options={{
+              style: {
+                base: {
+                  fontSize: "16px",
+                  color: "#424770",
+                  "::placeholder": {
+                    color: "#aab7c4",
+                  },
+                },
+                invalid: {
+                  color: "#9e2146",
                 },
               },
-              invalid: {
-                color: "#9e2146",
-              },
-            },
-          }}
-        />
-        <button
-          className="btn btn-primary px-9 text-lg mt-6"
-          type="submit"
-          disabled={!stripe || !clientSecret}
-        >
-          Pay
-        </button>
-        {error && (
-          <div>
-            <p className="text-red-600 font-medium">{error}</p>
-          </div>
-        )}
-        {transectionId && (
-          <div>
-            <p className="text-green-600 text-lg">
-              {" "}
-              your transectionId is : {transectionId}
-            </p>
-          </div>
-        )}{" "}
-      </form>
+            }}
+          />
+          <button
+            className="btn btn-primary px-9 text-lg mt-6"
+            type="submit"
+            disabled={!stripe || !clientSecret}
+          >
+            Pay
+          </button>
+          {error && (
+            <div>
+              <p className="text-red-600 font-medium">{error}</p>
+            </div>
+          )}
+          {transectionId && (
+            <div>
+              <p className="text-green-600 text-lg">
+                {" "}
+                your transectionId is : {transectionId}
+              </p>
+            </div>
+          )}{" "}
+        </form>
+      )}
+      {paymentMethod === "sslcommerz" && (
+        // TODO: add sslcommerz payment gateway
+        <div className="">
+        <input type="email" defaultValue={user?.email}  
+        disabled
+        placeholder="email" className="border-2 border-gray-300 w-full p-4 text-gray-800 rounded-lg" />
+        <button onClick={handlePayment} className="btn">Place Order</button>
+      </div>
+      )}
     </div>
   );
 };
